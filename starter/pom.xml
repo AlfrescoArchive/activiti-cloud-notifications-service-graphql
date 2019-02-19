@@ -168,7 +168,7 @@
                   </run>
                 </image>
                 <image>
-                  <name>activiti/rabbitmq-stomp</name>
+                  <name>rabbitmq:management</name>
                   <alias>activiti-rabbitmq</alias>
                   <run>
                     <ports>
