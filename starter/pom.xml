@@ -174,7 +174,6 @@
                     <ports>
                       <port>5672:5672</port>
                       <port>15672:15672</port>
-                      <port>61613:61613</port>
                     </ports>
                     <wait>
                       <log>Server startup complete</log>
