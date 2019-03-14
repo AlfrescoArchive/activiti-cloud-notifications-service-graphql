@@ -34,7 +34,7 @@ public class GraphQLSubscriptionSchemaBuilderTest {
 
     @Test
     public void testNotificationsSchemaBuilderParsesSchemaFromHttpUrl() {
-        GraphQLSubscriptionSchemaBuilder schemaBuilder = new GraphQLSubscriptionSchemaBuilder("classpath:activiti.graphqls");
+        GraphQLSubscriptionSchemaBuilder schemaBuilder = new GraphQLSubscriptionSchemaBuilder("classpath:activiti-ws.graphqls");
 
         assertThat(schemaBuilder.getGraphQLSchema()).isNotNull();
         assertThat(schemaBuilder.getGraphQLSchema().getSubscriptionType()).isNotNull();
