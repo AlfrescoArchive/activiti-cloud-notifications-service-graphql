@@ -7,7 +7,7 @@ pipeline {
       APP_NAME          = "activiti-cloud-notifications-service-graphql"
       RELEASE_ARTIFACT  = "org.activiti.cloud.notifications.graphql:activiti-cloud-notifications-graphql-dependencies"
       CHARTMUSEUM_CREDS = credentials("jenkins-x-chartmuseum")
-      RELEASE_BRANCH    = "develop"
+      RELEASE_BRANCH    = "7.0.x"
     }
     stages {
       stage("CI Build and push snapshot") {
