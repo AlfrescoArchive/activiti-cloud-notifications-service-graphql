@@ -54,6 +54,7 @@ type ProcessEngineNotification {
 	TASK_CANDIDATE_USER_REMOVED: [TASK_CANDIDATE_USER_REMOVED]
 	TASK_CANDIDATE_GROUP_ADDED: [TASK_CANDIDATE_GROUP_ADDED]
 	TASK_CANDIDATE_GROUP_REMOVED: [TASK_CANDIDATE_GROUP_REMOVED]
+	SIGNAL_RECEIVED: [SIGNAL_RECEIVED]
 }
 
 type ProcessInstanceType {
@@ -571,3 +572,35 @@ type ProcessDefinitionType {
     formKey : String
 }
 
+type SignalPayloadType {
+    elementId : String
+    processInstanceId : String
+    processDefinitionId : String
+    
+    id :  String
+    name : String
+    variables : ObjectScalar
+}
+
+type SIGNAL_RECEIVED {
+    serviceName : String
+    serviceFullName : String
+    serviceVersion : String
+    serviceType : String
+    appName : String
+    appVersion : String
+    entityId : String
+
+    id : String
+    timestamp : Long
+    entity : SignalPayloadType
+    eventType : String
+
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
+
+}
