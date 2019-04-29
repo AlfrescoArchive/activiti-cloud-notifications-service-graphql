@@ -34,6 +34,7 @@ type ProcessEngineNotification {
 	PROCESS_CANCELLED : [PROCESS_CANCELLED]
 	PROCESS_RESUMED : [PROCESS_RESUMED]
 	PROCESS_SUSPENDED : [PROCESS_SUSPENDED]
+	PROCESS_DEPLOYED : [PROCESS_DEPLOYED]
 	ACTIVITY_STARTED : [ACTIVITY_STARTED]
 	ACTIVITY_CANCELLED : [ACTIVITY_CANCELLED]
 	ACTIVITY_COMPLETED : [ACTIVITY_COMPLETED]
@@ -537,4 +538,36 @@ type TASK_CANDIDATE_GROUP_REMOVED {
     eventType : String
 }
 
+type PROCESS_DEPLOYED {
+    serviceName : String
+    serviceFullName : String
+    serviceVersion : String
+    serviceType : String
+    appName : String
+    appVersion : String
+    entityId : String
+
+    id : String
+    timestamp : Long
+    entity : ProcessDefinitionType
+    eventType : String
+    
+    processModelContent: String    
+
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
+}
+
+type ProcessDefinitionType {
+    id : String
+    name : String
+    key : String
+    description : String
+    version : Long
+    formKey : String
+}
 
