@@ -17,7 +17,7 @@ type Subscription {
     	serviceName : String, 
     	appName : String, 
     	processDefinitionKey : String,
-		processInstanceId : String. 
+		processInstanceId : String, 
 		businessKey : String
     ) : ProcessEngineNotification
 }
@@ -84,6 +84,13 @@ type PROCESS_RESUMED {
     timestamp : Long
     entity : ProcessInstanceType
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type PROCESS_SUSPENDED {
@@ -99,6 +106,13 @@ type PROCESS_SUSPENDED {
     timestamp : Long
     entity : ProcessInstanceType
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type PROCESS_STARTED {
@@ -116,7 +130,14 @@ type PROCESS_STARTED {
     eventType : String
     
     nestedProcessDefinitionId : String
-    nestedProcessInstanceId : String    
+    nestedProcessInstanceId : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type PROCESS_COMPLETED {
@@ -132,6 +153,13 @@ type PROCESS_COMPLETED {
     timestamp : Long
     entity : ProcessInstanceType
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type PROCESS_CREATED {
@@ -147,6 +175,13 @@ type PROCESS_CREATED {
     timestamp : Long
     entity : ProcessInstanceType
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type PROCESS_CANCELLED {
@@ -164,6 +199,13 @@ type PROCESS_CANCELLED {
     eventType : String
 
     cause: String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type BPMNActivityType {
@@ -187,6 +229,13 @@ type ACTIVITY_COMPLETED {
     timestamp : Long
     entity : BPMNActivityType
     eventType : String
+
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type ACTIVITY_STARTED {
@@ -202,6 +251,13 @@ type ACTIVITY_STARTED {
     timestamp : Long
     entity : BPMNActivityType
     eventType : String
+
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type ACTIVITY_CANCELLED {
@@ -219,6 +275,13 @@ type ACTIVITY_CANCELLED {
     eventType : String
 
     cause: String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type VariableInstance {
@@ -244,6 +307,13 @@ type VARIABLE_CREATED {
     timestamp : Long
     entity : VariableInstance
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type VARIABLE_DELETED {
@@ -259,6 +329,13 @@ type VARIABLE_DELETED {
     timestamp : Long
     entity : VariableInstance
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type VARIABLE_UPDATED {
@@ -274,6 +351,13 @@ type VARIABLE_UPDATED {
     timestamp : Long
     entity : VariableInstance
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 
@@ -301,6 +385,13 @@ type SEQUENCE_FLOW_TAKEN {
     timestamp : Long
     entity : SequenceFlowType
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type TaskType {
@@ -332,6 +423,13 @@ type TASK_CREATED {
     timestamp : Long
     entity : TaskType
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type TASK_SUSPENDED {
@@ -347,6 +445,13 @@ type TASK_SUSPENDED {
     timestamp : Long
     entity : TaskType
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type TASK_STARTED {
@@ -362,6 +467,13 @@ type TASK_STARTED {
     timestamp : Long
     entity : TaskType
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type TASK_ACTIVATED {
@@ -377,6 +489,13 @@ type TASK_ACTIVATED {
     timestamp : Long
     entity : TaskType
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type TASK_ASSIGNED {
@@ -392,6 +511,13 @@ type TASK_ASSIGNED {
     timestamp : Long
     entity : TaskType
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type TASK_COMPLETED {
@@ -407,6 +533,13 @@ type TASK_COMPLETED {
     timestamp : Long
     entity : TaskType
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type TASK_CANCELLED {
@@ -424,14 +557,25 @@ type TASK_CANCELLED {
     eventType : String
     
     cause: String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 
 type IntegrationContextType {
     id : String
     processInstanceId : String
+    parentProcessInstanceId : String
     processDefinitionId : String
+    processDefinitionVersion : Long
+    processDefinitionKey : String
     connectorType : String
+    businessKey: String
     activityElementId : String
     inBoundVariables : ObjectScalar
     outBoundVariables : ObjectScalar
@@ -451,6 +595,13 @@ type INTEGRATION_REQUESTED {
     timestamp : Long
     entity : IntegrationContextType
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type INTEGRATION_RESULT_RECEIVED {
@@ -466,6 +617,13 @@ type INTEGRATION_RESULT_RECEIVED {
     timestamp : Long
     entity : IntegrationContextType
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type TaskCandidateUserType {
@@ -486,6 +644,13 @@ type TASK_CANDIDATE_USER_ADDED {
     timestamp : Long
     entity : TaskCandidateUserType
     eventType : String
+    
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type TASK_CANDIDATE_USER_REMOVED {
@@ -501,6 +666,13 @@ type TASK_CANDIDATE_USER_REMOVED {
     timestamp : Long
     entity : TaskCandidateUserType
     eventType : String
+
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 
@@ -522,6 +694,13 @@ type TASK_CANDIDATE_GROUP_ADDED {
     timestamp : Long
     entity : TaskCandidateGroupType
     eventType : String
+
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type TASK_CANDIDATE_GROUP_REMOVED {
@@ -537,6 +716,13 @@ type TASK_CANDIDATE_GROUP_REMOVED {
     timestamp : Long
     entity : TaskCandidateGroupType
     eventType : String
+
+    processInstanceId : String
+    parentProcessInstanceId : String
+    processDefinitionId : String
+    processDefinitionKey : String
+    processDefinitionVersion : Long
+    businessKey String
 }
 
 type PROCESS_DEPLOYED {
