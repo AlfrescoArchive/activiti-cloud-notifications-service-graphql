@@ -1,6 +1,8 @@
 #
 # Schemas must have at least a query root type
 #
+scalar ObjectScalar
+
 schema {
     query: Query
     subscription : Subscription
@@ -223,7 +225,7 @@ type VariableInstance {
     processInstanceId : String
     taskId : String
     taskVariable : Boolean
-    value : String
+    value : ObjectScalar
 }
 
 
@@ -429,8 +431,8 @@ type IntegrationContextType {
     processDefinitionId : String
     connectorType : String
     activityElementId : String
-    inBoundVariables : String
-    outBoundVariables : String    
+    inBoundVariables : ObjectScalar
+    outBoundVariables : ObjectScalar
 }
 
 
