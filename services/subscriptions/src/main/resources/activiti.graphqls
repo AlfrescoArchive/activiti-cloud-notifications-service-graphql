@@ -90,7 +90,7 @@ type PROCESS_RESUMED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type PROCESS_SUSPENDED {
@@ -112,7 +112,7 @@ type PROCESS_SUSPENDED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type PROCESS_STARTED {
@@ -137,7 +137,7 @@ type PROCESS_STARTED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type PROCESS_COMPLETED {
@@ -159,7 +159,7 @@ type PROCESS_COMPLETED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type PROCESS_CREATED {
@@ -181,7 +181,7 @@ type PROCESS_CREATED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type PROCESS_CANCELLED {
@@ -205,7 +205,7 @@ type PROCESS_CANCELLED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type BPMNActivityType {
@@ -235,7 +235,7 @@ type ACTIVITY_COMPLETED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type ACTIVITY_STARTED {
@@ -257,7 +257,7 @@ type ACTIVITY_STARTED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type ACTIVITY_CANCELLED {
@@ -281,7 +281,7 @@ type ACTIVITY_CANCELLED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type VariableInstance {
@@ -313,7 +313,7 @@ type VARIABLE_CREATED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type VARIABLE_DELETED {
@@ -335,7 +335,7 @@ type VARIABLE_DELETED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type VARIABLE_UPDATED {
@@ -357,7 +357,7 @@ type VARIABLE_UPDATED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 
@@ -391,7 +391,7 @@ type SEQUENCE_FLOW_TAKEN {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type TaskType {
@@ -429,7 +429,7 @@ type TASK_CREATED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type TASK_SUSPENDED {
@@ -451,7 +451,7 @@ type TASK_SUSPENDED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type TASK_STARTED {
@@ -473,7 +473,7 @@ type TASK_STARTED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type TASK_ACTIVATED {
@@ -495,7 +495,7 @@ type TASK_ACTIVATED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type TASK_ASSIGNED {
@@ -517,7 +517,7 @@ type TASK_ASSIGNED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type TASK_COMPLETED {
@@ -539,7 +539,7 @@ type TASK_COMPLETED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type TASK_CANCELLED {
@@ -563,7 +563,7 @@ type TASK_CANCELLED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 
@@ -601,7 +601,7 @@ type INTEGRATION_REQUESTED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type INTEGRATION_RESULT_RECEIVED {
@@ -623,7 +623,7 @@ type INTEGRATION_RESULT_RECEIVED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type TaskCandidateUserType {
@@ -650,7 +650,7 @@ type TASK_CANDIDATE_USER_ADDED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type TASK_CANDIDATE_USER_REMOVED {
@@ -672,7 +672,7 @@ type TASK_CANDIDATE_USER_REMOVED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 
@@ -700,7 +700,7 @@ type TASK_CANDIDATE_GROUP_ADDED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type TASK_CANDIDATE_GROUP_REMOVED {
@@ -722,7 +722,7 @@ type TASK_CANDIDATE_GROUP_REMOVED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type PROCESS_DEPLOYED {
@@ -746,7 +746,7 @@ type PROCESS_DEPLOYED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 }
 
 type ProcessDefinitionType {
@@ -787,6 +787,6 @@ type SIGNAL_RECEIVED {
     processDefinitionId : String
     processDefinitionKey : String
     processDefinitionVersion : Long
-    businessKey String
+    businessKey : String
 
 }
