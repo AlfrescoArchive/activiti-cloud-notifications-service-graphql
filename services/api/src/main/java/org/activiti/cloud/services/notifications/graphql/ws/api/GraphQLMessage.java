@@ -19,13 +19,26 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.annotation.Generated;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(value = Include.ALWAYS)
 public class GraphQLMessage {
 
 	private Map<String, Object> payload;
 	private String id;
 	private GraphQLMessageType type;
 
-	GraphQLMessage() {
+    @Generated("SparkTools")
+    private GraphQLMessage(Builder builder) {
+        this.type = builder.type;
+        this.id = builder.id;
+        this.payload = builder.payload;
+    }
+
+    GraphQLMessage() {
 	}
 	
     public GraphQLMessage(String id, GraphQLMessageType type) {
@@ -77,5 +90,69 @@ public class GraphQLMessage {
         sb.append(", type=").append(this.type).append("]");
 		return sb.toString();
 	}
+
+    /**
+     * Creates builder to build {@link GraphQLMessage}.
+     * @return created builder
+     */
+    @Generated("SparkTools")
+    public static ITypeStage builder() {
+        return new Builder();
+    }
+
+    @Generated("SparkTools")
+    public interface ITypeStage {
+
+        public IBuildStage type(GraphQLMessageType type);
+    }
+
+    @Generated("SparkTools")
+    public interface IBuildStage {
+
+        public IBuildStage id(String id);
+
+        public IBuildStage payload(Map<String, Object> payload);
+
+        public GraphQLMessage build();
+    }
+
+    /**
+     * Builder to build {@link GraphQLMessage}.
+     */
+    @Generated("SparkTools")
+    public static final class Builder implements ITypeStage, IBuildStage {
+
+        private GraphQLMessageType type;
+        private String id;
+        private Map<String, Object> payload = Collections.emptyMap();
+
+        private Builder() {
+        }
+
+        @Override
+        public IBuildStage type(GraphQLMessageType type) {
+            this.type = type;
+            return this;
+        }
+
+        @Override
+        public IBuildStage id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        @Override
+        public IBuildStage payload(Map<String, Object> payload) {
+            this.payload = payload;
+            return this;
+        }
+
+        @Override
+        public GraphQLMessage build() {
+            return new GraphQLMessage(this);
+        }
+    }
+
+
 
 }
