@@ -19,8 +19,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Generated;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -31,7 +29,6 @@ public class GraphQLMessage {
 	private String id;
 	private GraphQLMessageType type;
 
-    @Generated("SparkTools")
     private GraphQLMessage(Builder builder) {
         this.type = builder.type;
         this.id = builder.id;
@@ -95,18 +92,15 @@ public class GraphQLMessage {
      * Creates builder to build {@link GraphQLMessage}.
      * @return created builder
      */
-    @Generated("SparkTools")
     public static ITypeStage builder() {
         return new Builder();
     }
 
-    @Generated("SparkTools")
     public interface ITypeStage {
 
         public IBuildStage type(GraphQLMessageType type);
     }
 
-    @Generated("SparkTools")
     public interface IBuildStage {
 
         public IBuildStage id(String id);
@@ -119,7 +113,6 @@ public class GraphQLMessage {
     /**
      * Builder to build {@link GraphQLMessage}.
      */
-    @Generated("SparkTools")
     public static final class Builder implements ITypeStage, IBuildStage {
 
         private GraphQLMessageType type;
