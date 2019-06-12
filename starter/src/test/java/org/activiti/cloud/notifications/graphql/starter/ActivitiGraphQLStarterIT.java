@@ -490,15 +490,20 @@ public class ActivitiGraphQLStarterIT {
     }      
     
     @Test
-    public void testGraphqlWsSubprotocolServerWithUserRoleNotAuthorized() {
+    public void testGraphqlWsSubprotocolServerWithUserRoleNotAuthorized() throws JsonProcessingException {
         ReplayProcessor<String> output = ReplayProcessor.create();
 
         keycloakTokenProducer.setKeycloakTestUser(HRUSER);
         
         final String accessToken =  keycloakTokenProducer.authorizationHeaders().getFirst(AUTHORIZATION);
         
-        String initMessage = "{\"type\":\"connection_init\",\"payload\":{\"X-Authorization\":\""+accessToken+"\"}}";
-        
+        Map<String, Object> payload = mapBuilder().put("X-Authorization", accessToken)
+                                                  .get();
+
+        String initMessage = objectMapper.writeValueAsString(GraphQLMessage.builder()
+                                 .type(GraphQLMessageType.CONNECTION_INIT)
+                                 .payload(payload)
+                                 .build());        
         HttpClient.create()
                   .baseUrl("ws://localhost:"+port)
                   .wiretap(true)
@@ -520,19 +525,21 @@ public class ActivitiGraphQLStarterIT {
                   .doOnError(i -> System.err.println("Failed requesting server: " + i))
                   .subscribe();
         
-        String expected = "{\"payload\":{},\"id\":null,\"type\":\"connection_error\"}";
-        
+        String expected = objectMapper.writeValueAsString(GraphQLMessage.builder()
+                                                                         .type(GraphQLMessageType.CONNECTION_ERROR)
+                                                                         .build());
         StepVerifier.create(output)
                     .expectNext(expected)
                     .verifyComplete();
     }    
 
     @Test
-    public void testGraphqlWsSubprotocolServerUnauthorized() {
+    public void testGraphqlWsSubprotocolServerUnauthorized() throws JsonProcessingException {
         ReplayProcessor<String> output = ReplayProcessor.create();
 
-        String initMessage = "{\"type\":\"connection_init\",\"payload\":{}}";
-        
+        String initMessage = objectMapper.writeValueAsString(GraphQLMessage.builder()
+                                                             .type(GraphQLMessageType.CONNECTION_INIT)
+                                                             .build());            
         HttpClient.create()
                   .baseUrl("ws://localhost:"+port)
                   .wiretap(true)
@@ -555,8 +562,9 @@ public class ActivitiGraphQLStarterIT {
                   .doOnError(i -> System.err.println("Failed requesting server: " + i))
                   .subscribe();
         
-        String expected = "{\"payload\":{},\"id\":null,\"type\":\"connection_error\"}";
-        
+        String expected = objectMapper.writeValueAsString(GraphQLMessage.builder()
+                                                          .type(GraphQLMessageType.CONNECTION_ERROR)
+                                                          .build());
         StepVerifier.create(output)
                     .expectNext(expected)
                     .verifyComplete();
