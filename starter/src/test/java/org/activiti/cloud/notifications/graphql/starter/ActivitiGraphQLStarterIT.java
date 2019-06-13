@@ -193,8 +193,6 @@ public class ActivitiGraphQLStarterIT {
          
         Map<String, Object> payload = new StringObjectMapBuilder().put("query", "subscription($appName: String!) { "
                                                                                 + "  engineEvents(appName: $appName) { "
-                                                                                + "    appName "
-                                                                                + "    serviceName "
                                                                                 + "    PROCESS_CREATED { processInstanceId } "
                                                                                 + "    PROCESS_STARTED { processInstanceId } "
                                                                                 + "  } "
@@ -273,9 +271,7 @@ public class ActivitiGraphQLStarterIT {
         // then        
         Map<String, Object> message = Collections.singletonMap("data",
                                          Collections.singletonMap("engineEvents",
-                                              mapBuilder().put("appName", "default-app")
-                                                          .put("serviceName", "rb-my-app")
-                                                          .put("PROCESS_CREATED", Arrays.array(Collections.singletonMap("processInstanceId", "processInstanceId")))
+                                              mapBuilder().put("PROCESS_CREATED", Arrays.array(Collections.singletonMap("processInstanceId", "processInstanceId")))
                                                           .put("PROCESS_STARTED", Arrays.array(Collections.singletonMap("processInstanceId", "processInstanceId")))
                                                           .get())
                                       );
@@ -303,8 +299,6 @@ public class ActivitiGraphQLStarterIT {
          
         Map<String, Object> payload = new StringObjectMapBuilder().put("query", "subscription($appName: String!) { "
                                                                                 + "  engineEvents(appName: $appName) { "
-                                                                                + "    appName "
-                                                                                + "    serviceName "
                                                                                 + "    PROCESS_DEPLOYED { "
                                                                                 + "      processDefinitionKey "
                                                                                 + "      processModelContent "
@@ -369,9 +363,7 @@ public class ActivitiGraphQLStarterIT {
         // then        
         Map<String, Object> message = Collections.singletonMap("data",
                                          Collections.singletonMap("engineEvents",
-                                              mapBuilder().put("appName", "default-app")
-                                                          .put("serviceName", "rb-my-app")
-                                                          .put("PROCESS_DEPLOYED", Arrays.array(mapBuilder().put("processDefinitionKey", "processDefinitionKey")
+                                              mapBuilder().put("PROCESS_DEPLOYED", Arrays.array(mapBuilder().put("processDefinitionKey", "processDefinitionKey")
                                                                                                             .put("processModelContent", "processModelContent")
                                                                                                             .get()))
                                                           .get())
@@ -401,8 +393,6 @@ public class ActivitiGraphQLStarterIT {
          
         Map<String, Object> payload = new StringObjectMapBuilder().put("query", "subscription($appName: String!) { "
                                                                                 + "  engineEvents(appName: $appName) { "
-                                                                                + "    appName "
-                                                                                + "    serviceName "
                                                                                 + "    SIGNAL_RECEIVED { "
                                                                                 + "      processInstanceId "
                                                                                 + "      processDefinitionId "
@@ -470,9 +460,7 @@ public class ActivitiGraphQLStarterIT {
         // then        
         Map<String, Object> message = Collections.singletonMap("data",
                                          Collections.singletonMap("engineEvents",
-                                              mapBuilder().put("appName", "default-app")
-                                                          .put("serviceName", "rb-my-app")
-                                                          .put("SIGNAL_RECEIVED", Arrays.array(mapBuilder().put("processInstanceId", "processInstanceId")
+                                              mapBuilder().put("SIGNAL_RECEIVED", Arrays.array(mapBuilder().put("processInstanceId", "processInstanceId")
                                                                                                            .put("processDefinitionId", "processDefinitionId")
                                                                                                            .get()))
                                                           .get())

@@ -23,11 +23,6 @@ type Subscription {
 }
 
 type ProcessEngineNotification {
-	serviceName : String
-	appName : String 
-	processDefinitionKey : String 
-	processInstanceId : String 
-	businessKey : String 
 	PROCESS_STARTED : [PROCESS_STARTED]
 	PROCESS_COMPLETED : [PROCESS_COMPLETED]
 	PROCESS_CREATED : [PROCESS_CREATED]
