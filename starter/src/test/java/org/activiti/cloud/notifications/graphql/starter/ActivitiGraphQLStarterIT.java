@@ -34,11 +34,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.ExecutionResult;
 import graphql.GraphQLError;
 import org.activiti.api.runtime.model.impl.BPMNSignalImpl;
+import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
 import org.activiti.cloud.api.process.model.events.CloudBPMNSignalReceivedEvent;
+import org.activiti.cloud.api.process.model.events.CloudBPMNTimerCancelledEvent;
+import org.activiti.cloud.api.process.model.events.CloudBPMNTimerExecutedEvent;
+import org.activiti.cloud.api.process.model.events.CloudBPMNTimerFailedEvent;
+import org.activiti.cloud.api.process.model.events.CloudBPMNTimerFiredEvent;
+import org.activiti.cloud.api.process.model.events.CloudBPMNTimerRetriesDecrementedEvent;
+import org.activiti.cloud.api.process.model.events.CloudBPMNTimerScheduledEvent;
 import org.activiti.cloud.api.process.model.events.CloudProcessCreatedEvent;
 import org.activiti.cloud.api.process.model.events.CloudProcessDeployedEvent;
 import org.activiti.cloud.api.process.model.events.CloudProcessStartedEvent;
 import org.activiti.cloud.api.process.model.impl.events.CloudBPMNSignalReceivedEventImpl;
+import org.activiti.cloud.api.process.model.impl.events.CloudBPMNTimerCancelledEventImpl;
+import org.activiti.cloud.api.process.model.impl.events.CloudBPMNTimerExecutedEventImpl;
+import org.activiti.cloud.api.process.model.impl.events.CloudBPMNTimerFailedEventImpl;
+import org.activiti.cloud.api.process.model.impl.events.CloudBPMNTimerFiredEventImpl;
+import org.activiti.cloud.api.process.model.impl.events.CloudBPMNTimerRetriesDecrementedEventImpl;
+import org.activiti.cloud.api.process.model.impl.events.CloudBPMNTimerScheduledEventImpl;
 import org.activiti.cloud.api.process.model.impl.events.CloudProcessCreatedEventImpl;
 import org.activiti.cloud.api.process.model.impl.events.CloudProcessDeployedEventImpl;
 import org.activiti.cloud.api.process.model.impl.events.CloudProcessStartedEventImpl;
@@ -477,7 +490,234 @@ public class ActivitiGraphQLStarterIT {
                     .expectNext(dataMessage)
                     .expectComplete()
                     .verify(TIMEOUT);
+    }
+    
+    @Test
+    public void testGraphqlSubscriptionCloudBPMNTimerEvents() throws JsonProcessingException {
+        ReplayProcessor<String> data = ReplayProcessor.create();
+        
+        keycloakTokenProducer.setKeycloakTestUser(TESTADMIN);
+        final String auth = keycloakTokenProducer.authorizationHeaders().getFirst(AUTHORIZATION);
+        
+        Map<String, Object> variables = new StringObjectMapBuilder().put("appName", "default-app")
+                                                                    .put("eventTypes", Arrays.array("TIMER_SCHEDULED", 
+                                                                                                    "TIMER_FIRED",
+                                                                                                    "TIMER_EXECUTED",
+                                                                                                    "TIMER_CANCELLED",
+                                                                                                    "TIMER_FAILED",
+                                                                                                    "TIMER_RETRIES_DECREMENTED"))
+                                                                    .get();
+         
+        Map<String, Object> payload = new StringObjectMapBuilder().put("query", "subscription($appName: String!, $eventTypes: [EngineEventType!]) { "
+                                                                                + "  engineEvents(appName: [$appName], eventType: $eventTypes) { "
+                                                                                + "    processInstanceId "
+                                                                                + "    processDefinitionId "
+                                                                                + "    entity "
+                                                                                + "    eventType "
+                                                                                + "  } "
+                                                                                + "}")
+                                                                  .put("variables", variables)
+                                                                  .get();        
+        GraphQLMessage start = GraphQLMessage.builder()
+                                             .type(GraphQLMessageType.START)
+                                             .id("1")
+                                             .payload(payload)
+                                             .build();
+        
+        String startMessage = objectMapper.writeValueAsString(start);
+        
+        // given 
+        CloudBPMNTimerScheduledEvent event1 = new CloudBPMNTimerScheduledEventImpl("id",
+                                                                                   new Date().getTime(),
+                                                                                   new BPMNTimerImpl("timerId"),
+                                                                                   "processDefinitionId",
+                                                                                   "processInstanceId") {
+            {
+                setAppName("default-app");
+                setServiceName("rb-my-app");
+                setServiceFullName("serviceFullName");
+                setServiceType("runtime-bundle");
+                setServiceVersion("");
+                setProcessDefinitionId("processDefinitionId");
+                setProcessDefinitionKey("processDefinitionKey");
+                setProcessDefinitionVersion(1);
+                setBusinessKey("businessKey");
+            }
+        };
+        
+        // given 
+        CloudBPMNTimerFiredEvent event2 = new CloudBPMNTimerFiredEventImpl("id",
+                                                                           new Date().getTime(),
+                                                                           new BPMNTimerImpl("timerId"),
+                                                                           "processDefinitionId",
+                                                                           "processInstanceId") {
+            {
+                setAppName("default-app");
+                setServiceName("rb-my-app");
+                setServiceFullName("serviceFullName");
+                setServiceType("runtime-bundle");
+                setServiceVersion("");
+                setProcessDefinitionId("processDefinitionId");
+                setProcessDefinitionKey("processDefinitionKey");
+                setProcessDefinitionVersion(1);
+                setBusinessKey("businessKey");
+            }
+        };
+
+        // given 
+        CloudBPMNTimerExecutedEvent event3 = new CloudBPMNTimerExecutedEventImpl("id",
+                                                                                 new Date().getTime(),
+                                                                                 new BPMNTimerImpl("timerId"),
+                                                                                 "processDefinitionId",
+                                                                                 "processInstanceId") {
+            {
+                setAppName("default-app");
+                setServiceName("rb-my-app");
+                setServiceFullName("serviceFullName");
+                setServiceType("runtime-bundle");
+                setServiceVersion("");
+                setProcessDefinitionId("processDefinitionId");
+                setProcessDefinitionKey("processDefinitionKey");
+                setProcessDefinitionVersion(1);
+                setBusinessKey("businessKey");
+            }
+        };
+
+        // given 
+        CloudBPMNTimerCancelledEvent event4 = new CloudBPMNTimerCancelledEventImpl("id",
+                                                                                   new Date().getTime(),
+                                                                                   new BPMNTimerImpl("timerId"),
+                                                                                   "processDefinitionId",
+                                                                                   "processInstanceId") {
+            {
+                setAppName("default-app");
+                setServiceName("rb-my-app");
+                setServiceFullName("serviceFullName");
+                setServiceType("runtime-bundle");
+                setServiceVersion("");
+                setProcessDefinitionId("processDefinitionId");
+                setProcessDefinitionKey("processDefinitionKey");
+                setProcessDefinitionVersion(1);
+                setBusinessKey("businessKey");
+            }
+        };
+
+        // given 
+        CloudBPMNTimerFailedEvent event5 = new CloudBPMNTimerFailedEventImpl("id",
+                                                                             new Date().getTime(),
+                                                                             new BPMNTimerImpl("timerId"),
+                                                                             "processDefinitionId",
+                                                                             "processInstanceId") {
+            {
+                setAppName("default-app");
+                setServiceName("rb-my-app");
+                setServiceFullName("serviceFullName");
+                setServiceType("runtime-bundle");
+                setServiceVersion("");
+                setProcessDefinitionId("processDefinitionId");
+                setProcessDefinitionKey("processDefinitionKey");
+                setProcessDefinitionVersion(1);
+                setBusinessKey("businessKey");
+            }
+        };
+        
+        // given 
+        CloudBPMNTimerRetriesDecrementedEvent event6 = new CloudBPMNTimerRetriesDecrementedEventImpl("id",
+                                                                                                     new Date().getTime(),
+                                                                                                     new BPMNTimerImpl("timerId"),
+                                                                                                     "processDefinitionId",
+                                                                                                     "processInstanceId") {
+            {
+                setAppName("default-app");
+                setServiceName("rb-my-app");
+                setServiceFullName("serviceFullName");
+                setServiceType("runtime-bundle");
+                setServiceVersion("");
+                setProcessDefinitionId("processDefinitionId");
+                setProcessDefinitionKey("processDefinitionKey");
+                setProcessDefinitionVersion(1);
+                setBusinessKey("businessKey");
+            }
+        };        
+        
+
+        WebsocketSender client = HttpClient.create()
+                                           .baseUrl("ws://localhost:" + port)
+                                           .wiretap(true)
+                                           .headers(h -> h.add(AUTHORIZATION, auth))
+                                           .websocket(GRAPHQL_WS)
+                                           .uri(WS_GRAPHQL_URI);
+        
+        // start subscription
+        client.handle((i, o) -> {
+              o.options(NettyPipeline.SendOptions::flushOnEach)
+               .sendString(Mono.just(startMessage))
+               .then()
+               .log("start")
+               .subscribe();
+             
+            return i.receive()
+                    .asString()
+                    .log("data")
+                    .take(1)
+                    .doOnSubscribe(s -> producerChannel.output()
+                                                       .send(MessageBuilder.withPayload(Arrays.array(event1,event2,event3,event4,event5,event6))
+                                                                           .setHeader("routingKey", "eventProducer")
+                                                                           .build()))
+                    .delaySubscription(Duration.ofSeconds(1))
+                    .subscribeWith(data);
+        }) // stop subscription
+        .collectList()
+        .subscribe();
+        
+        // then        
+        Map<String, Object> message = Maps.of("data",
+                                              Maps.of("engineEvents",
+                                                      Arrays.array(mapBuilder().put("processInstanceId", "processInstanceId")
+                                                                               .put("processDefinitionId", "processDefinitionId")
+                                                                               .put("entity", new BPMNTimerImpl("timerId"))
+                                                                               .put("eventType", "TIMER_SCHEDULED")
+                                                                               .get(),
+                                                                   mapBuilder().put("processInstanceId", "processInstanceId")
+                                                                               .put("processDefinitionId", "processDefinitionId")
+                                                                               .put("entity", new BPMNTimerImpl("timerId"))
+                                                                               .put("eventType", "TIMER_FIRED")
+                                                                               .get(),
+                                                                   mapBuilder().put("processInstanceId", "processInstanceId")
+                                                                               .put("processDefinitionId", "processDefinitionId")
+                                                                               .put("entity", new BPMNTimerImpl("timerId"))
+                                                                               .put("eventType", "TIMER_EXECUTED")
+                                                                               .get(),
+                                                                   mapBuilder().put("processInstanceId", "processInstanceId")
+                                                                               .put("processDefinitionId", "processDefinitionId")
+                                                                               .put("entity", new BPMNTimerImpl("timerId"))
+                                                                               .put("eventType", "TIMER_CANCELLED")
+                                                                               .get(),
+                                                                   mapBuilder().put("processInstanceId", "processInstanceId")
+                                                                               .put("processDefinitionId", "processDefinitionId")
+                                                                               .put("entity", new BPMNTimerImpl("timerId"))
+                                                                               .put("eventType", "TIMER_FAILED")
+                                                                               .get(),
+                                                                   mapBuilder().put("processInstanceId", "processInstanceId")
+                                                                               .put("processDefinitionId", "processDefinitionId")
+                                                                               .put("entity", new BPMNTimerImpl("timerId"))
+                                                                               .put("eventType", "TIMER_RETRIES_DECREMENTED")
+                                                                               .get()
+                                                      )
+                                              )
+                                      );
+        
+        String dataMessage = objectMapper.writeValueAsString(GraphQLMessage.builder()
+                                                                           .type(GraphQLMessageType.DATA)
+                                                                           .id("1")
+                                                                           .payload(message)
+                                                                           .build());
+        StepVerifier.create(data)
+                    .expectNext(dataMessage)
+                    .expectComplete()
+                    .verify(TIMEOUT);
     }      
+    
     
     @Test
     public void testGraphqlWsSubprotocolServerWithUserRoleNotAuthorized() throws JsonProcessingException {
