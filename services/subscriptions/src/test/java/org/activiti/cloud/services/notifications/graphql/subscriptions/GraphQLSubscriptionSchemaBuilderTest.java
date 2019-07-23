@@ -17,7 +17,6 @@ package org.activiti.cloud.services.notifications.graphql.subscriptions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.activiti.cloud.services.notifications.graphql.subscriptions.GraphQLSubscriptionSchemaBuilder;
 import org.junit.Test;
 
 public class GraphQLSubscriptionSchemaBuilderTest {

@@ -15,8 +15,10 @@
  */
 package org.activiti.cloud.services.notifications.graphql.subscriptions.datafetcher;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import graphql.language.Field;
@@ -46,24 +48,36 @@ public class EngineEventsFluxPublisherFactory implements EngineEventsPublisherFa
     }
     
     @Override
-    public Flux<EngineEvent> getPublisher(DataFetchingEnvironment environment) {
+    public Flux<List<EngineEvent>> getPublisher(DataFetchingEnvironment environment) {
         Set<String> selections = resolveSelections(environment);
         List<String> destinations = destinationResolver.resolveDestinations(environment);
+        
+        Predicate<? super EngineEvent> matchDestinations = filterDestinations(destinations);
+        Predicate<? super EngineEvent> matchSelections = filterSelections(selections);
         
         log.info("Resolved selections: {} for destinations: {}", selections, destinations);
 
         return engineEventsFlux.map(Message::getPayload)
-                               .filter(engineEvent -> {
-                                   // filter events that do not match subscription arguments
-                                   String path = routingKeyResolver.resolveRoutingKey(engineEvent);
-                                   
-                                   return destinations.stream()
-                                                      .anyMatch(pattern -> pathMatcher.match(pattern, path));
-                               })
-                               .filter(engineEvent -> {
-                                   // apply filter to events that do not match selections in the subscription
-                                   return selections.stream().anyMatch(eventType -> engineEvent.containsKey(eventType));
-                               });
+                               .filter(matchDestinations)
+                               .filter(matchSelections)
+                               .buffer(Duration.ofSeconds(1));
+    }
+    
+    // filter events that do not match subscription arguments
+    protected Predicate<? super EngineEvent> filterDestinations(List<String> destinations) {
+        return (engineEvent) -> {
+            String path = routingKeyResolver.resolveRoutingKey(engineEvent);
+            
+            return destinations.stream()
+                               .anyMatch(pattern -> pathMatcher.match(pattern, path));
+        };
+    }
+
+    // apply filter to events that do not match selections in the subscription
+    protected Predicate<? super EngineEvent> filterSelections(Set<String> selections) {
+        return engineEvent -> {
+            return selections.stream().anyMatch(eventType -> engineEvent.containsKey(eventType));
+        };
     }
     
     /**

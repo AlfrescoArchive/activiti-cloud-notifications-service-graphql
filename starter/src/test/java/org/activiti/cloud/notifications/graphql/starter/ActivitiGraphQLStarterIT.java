@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -50,6 +49,7 @@ import org.activiti.cloud.services.notifications.graphql.ws.api.GraphQLMessage;
 import org.activiti.cloud.services.notifications.graphql.ws.api.GraphQLMessageType;
 import org.activiti.cloud.services.query.model.ProcessDefinitionEntity;
 import org.activiti.cloud.services.test.identity.keycloak.interceptor.KeycloakTokenProducer;
+import org.apache.groovy.util.Maps;
 import org.assertj.core.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
@@ -189,12 +189,13 @@ public class ActivitiGraphQLStarterIT {
         final String auth = keycloakTokenProducer.authorizationHeaders().getFirst(AUTHORIZATION);
         
         Map<String, Object> variables = new StringObjectMapBuilder().put("appName", "default-app")
+                                                                    .put("eventTypes", Arrays.array("PROCESS_CREATED", "PROCESS_STARTED"))
                                                                     .get();
          
-        Map<String, Object> payload = new StringObjectMapBuilder().put("query", "subscription($appName: String!) { "
-                                                                                + "  engineEvents(appName: $appName) { "
-                                                                                + "    PROCESS_CREATED { processInstanceId } "
-                                                                                + "    PROCESS_STARTED { processInstanceId } "
+        Map<String, Object> payload = new StringObjectMapBuilder().put("query", "subscription($appName: String!, $eventTypes: [EngineEventType!]) { "
+                                                                                + "  engineEvents(appName: [$appName], eventType: $eventTypes) { "
+                                                                                + "    processInstanceId  "
+                                                                                + "    eventType "
                                                                                 + "  } "
                                                                                 + "}")
                                                                   .put("variables", variables)
@@ -269,11 +270,14 @@ public class ActivitiGraphQLStarterIT {
         .subscribe();
         
         // then        
-        Map<String, Object> message = Collections.singletonMap("data",
-                                         Collections.singletonMap("engineEvents",
-                                              mapBuilder().put("PROCESS_CREATED", Arrays.array(Collections.singletonMap("processInstanceId", "processInstanceId")))
-                                                          .put("PROCESS_STARTED", Arrays.array(Collections.singletonMap("processInstanceId", "processInstanceId")))
-                                                          .get())
+        Map<String, Object> message = Maps.of("data",
+                                              Maps.of("engineEvents",
+                                                      Arrays.array(Maps.of("processInstanceId", "processInstanceId",
+                                                                           "eventType", "PROCESS_CREATED"),
+                                                                   Maps.of("processInstanceId", "processInstanceId",
+                                                                           "eventType", "PROCESS_STARTED")
+                                                      )
+                                              )
                                       );
         
         String dataMessage = objectMapper.writeValueAsString(GraphQLMessage.builder()
@@ -298,15 +302,13 @@ public class ActivitiGraphQLStarterIT {
                                                                     .get();
          
         Map<String, Object> payload = new StringObjectMapBuilder().put("query", "subscription($appName: String!) { "
-                                                                                + "  engineEvents(appName: $appName) { "
-                                                                                + "    PROCESS_DEPLOYED { "
-                                                                                + "      processDefinitionKey "
-                                                                                + "      processModelContent "
-                                                                                + "    } "
+                                                                                + "  engineEvents(appName: [$appName], eventType: PROCESS_DEPLOYED) { "
+                                                                                + "    processDefinitionKey "
+                                                                                + "    eventType "
                                                                                 + "  } "
                                                                                 + "}")
                                                                   .put("variables", variables)
-                                                                  .get();        
+                                                                  .get();
         GraphQLMessage start = GraphQLMessage.builder()
                                              .type(GraphQLMessageType.START)
                                              .id("1")
@@ -361,13 +363,11 @@ public class ActivitiGraphQLStarterIT {
         .subscribe();
         
         // then        
-        Map<String, Object> message = Collections.singletonMap("data",
-                                         Collections.singletonMap("engineEvents",
-                                              mapBuilder().put("PROCESS_DEPLOYED", Arrays.array(mapBuilder().put("processDefinitionKey", "processDefinitionKey")
-                                                                                                            .put("processModelContent", "processModelContent")
-                                                                                                            .get()))
-                                                          .get())
-                                      );
+        Map<String, Object> message = Maps.of("data",
+                                              Maps.of("engineEvents", Arrays.array(mapBuilder().put("processDefinitionKey", "processDefinitionKey")
+                                                                                               .put("eventType", "PROCESS_DEPLOYED")
+                                                                                               .get()))
+                                                          );
         
         String dataMessage = objectMapper.writeValueAsString(GraphQLMessage.builder()
                                                                            .type(GraphQLMessageType.DATA)
@@ -389,14 +389,14 @@ public class ActivitiGraphQLStarterIT {
         final String auth = keycloakTokenProducer.authorizationHeaders().getFirst(AUTHORIZATION);
         
         Map<String, Object> variables = new StringObjectMapBuilder().put("appName", "default-app")
+                                                                    .put("eventType", "SIGNAL_RECEIVED")
                                                                     .get();
          
-        Map<String, Object> payload = new StringObjectMapBuilder().put("query", "subscription($appName: String!) { "
-                                                                                + "  engineEvents(appName: $appName) { "
-                                                                                + "    SIGNAL_RECEIVED { "
-                                                                                + "      processInstanceId "
-                                                                                + "      processDefinitionId "
-                                                                                + "    } "
+        Map<String, Object> payload = new StringObjectMapBuilder().put("query", "subscription($appName: String!, $eventType: EngineEventType!) { "
+                                                                                + "  engineEvents(appName: [$appName], eventType: [$eventType]) { "
+                                                                                + "    processInstanceId "
+                                                                                + "    processDefinitionId "
+                                                                                + "    eventType "
                                                                                 + "  } "
                                                                                 + "}")
                                                                   .put("variables", variables)
@@ -458,12 +458,14 @@ public class ActivitiGraphQLStarterIT {
         .subscribe();
         
         // then        
-        Map<String, Object> message = Collections.singletonMap("data",
-                                         Collections.singletonMap("engineEvents",
-                                              mapBuilder().put("SIGNAL_RECEIVED", Arrays.array(mapBuilder().put("processInstanceId", "processInstanceId")
-                                                                                                           .put("processDefinitionId", "processDefinitionId")
-                                                                                                           .get()))
-                                                          .get())
+        Map<String, Object> message = Maps.of("data",
+                                              Maps.of("engineEvents",
+                                                      Arrays.array(mapBuilder().put("processInstanceId", "processInstanceId")
+                                                                               .put("processDefinitionId", "processDefinitionId")
+                                                                               .put("eventType", "SIGNAL_RECEIVED")
+                                                                               .get()
+                                                      )
+                                              )
                                       );
         
         String dataMessage = objectMapper.writeValueAsString(GraphQLMessage.builder()
