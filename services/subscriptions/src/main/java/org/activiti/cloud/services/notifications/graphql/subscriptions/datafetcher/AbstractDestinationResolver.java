@@ -83,13 +83,13 @@ public abstract class AbstractDestinationResolver implements DataFetcherDestinat
         
         Object argument = environment.getArgument(argumentName);
         
-        if(argument instanceof List)
+        if(argument instanceof List) {
             value.addAll(environment.getArgument(argumentName));
-        else if(argument != null )
+        } else if(argument != null ) {
             value.add(argument.toString());
-        else
+        } else {
             value.add(wildcard());
-        
+        }
         
         return value;
     }
