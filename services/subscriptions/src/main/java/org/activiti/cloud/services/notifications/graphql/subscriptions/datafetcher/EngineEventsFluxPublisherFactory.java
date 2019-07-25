@@ -22,7 +22,6 @@ import java.util.logging.Level;
 import graphql.schema.DataFetchingEnvironment;
 import org.activiti.cloud.services.notifications.graphql.events.model.EngineEvent;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 import reactor.core.publisher.Flux;
 import reactor.util.Logger;
 import reactor.util.Loggers;
@@ -42,13 +41,11 @@ public class EngineEventsFluxPublisherFactory implements EngineEventsPublisherFa
     
     @Override
     public Flux<List<EngineEvent>> getPublisher(DataFetchingEnvironment environment) {
-        Predicate<? super Message<EngineEvent>> predicate = predicateFactory.getPredicate(environment);
+        Predicate<? super EngineEvent> predicate = predicateFactory.getPredicate(environment);
 
         return engineEventsFlux.log(logger, Level.CONFIG, true)
                                .flatMapSequential(message -> Flux.fromIterable(message.getPayload())
-                                                                 .map(it -> MessageBuilder.<EngineEvent> createMessage(it, message.getHeaders()))
                                                                  .filter(predicate)
-                                                                 .map(Message::getPayload)
                                                                  .collectList()
                                                                  .filter(list -> !list.isEmpty())
                                );

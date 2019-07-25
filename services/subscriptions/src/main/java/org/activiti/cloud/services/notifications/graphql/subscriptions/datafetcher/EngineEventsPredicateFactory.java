@@ -19,9 +19,8 @@ import java.util.function.Predicate;
 
 import graphql.schema.DataFetchingEnvironment;
 import org.activiti.cloud.services.notifications.graphql.events.model.EngineEvent;
-import org.springframework.messaging.Message;
 
 public interface EngineEventsPredicateFactory {
 
-    Predicate<? super Message<EngineEvent>> getPredicate(DataFetchingEnvironment environment);
+    Predicate<? super EngineEvent> getPredicate(DataFetchingEnvironment environment);
 }

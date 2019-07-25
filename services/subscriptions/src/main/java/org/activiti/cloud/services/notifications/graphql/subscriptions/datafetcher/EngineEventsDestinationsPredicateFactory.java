@@ -23,7 +23,6 @@ import org.activiti.cloud.services.notifications.graphql.events.RoutingKeyResolv
 import org.activiti.cloud.services.notifications.graphql.events.model.EngineEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.messaging.Message;
 import org.springframework.util.AntPathMatcher;
 
 public class EngineEventsDestinationsPredicateFactory implements EngineEventsPredicateFactory {
@@ -34,7 +33,6 @@ public class EngineEventsDestinationsPredicateFactory implements EngineEventsPre
 
     private DataFetcherDestinationResolver destinationResolver = new AntPathDestinationResolver();
     private AntPathMatcher pathMatcher = new AntPathMatcher(".");
-
     
     public EngineEventsDestinationsPredicateFactory(RoutingKeyResolver routingKeyResolver) {
         this.routingKeyResolver = routingKeyResolver;
@@ -42,15 +40,12 @@ public class EngineEventsDestinationsPredicateFactory implements EngineEventsPre
 
     // filter events that do not match subscription arguments
     @Override
-    public Predicate<? super Message<EngineEvent>> getPredicate(DataFetchingEnvironment environment) {
+    public Predicate<? super EngineEvent> getPredicate(DataFetchingEnvironment environment) {
         List<String> destinations = destinationResolver.resolveDestinations(environment);
         
         logger.info("Resolved destinations {} for environment: {}", destinations, environment);
         
-        return (message) -> {
-            logger.debug("Processing message: {}", message);
-
-            EngineEvent engineEvent = message.getPayload();
+        return (engineEvent) -> {
             String routingKey = routingKeyResolver.resolveRoutingKey(engineEvent);
             
             logger.debug("Resolved routing key {} for {}", routingKey, engineEvent);
@@ -65,7 +60,6 @@ public class EngineEventsDestinationsPredicateFactory implements EngineEventsPre
 
         return this;
     }
-
     
     public EngineEventsDestinationsPredicateFactory pathMatcher(AntPathMatcher pathMatcher) {
         this.pathMatcher = pathMatcher;
