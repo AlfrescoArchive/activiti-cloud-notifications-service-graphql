@@ -15,6 +15,8 @@
  */
 package org.activiti.cloud.services.notifications.graphql.subscriptions.config;
 
+import java.util.List;
+
 import graphql.GraphQL;
 import org.activiti.cloud.notifications.graphql.schema.GraphQLSchemaConfigurer;
 import org.activiti.cloud.notifications.graphql.schema.GraphQLShemaRegistration;
@@ -57,7 +59,7 @@ public class GraphQLSubscriptionsAutoConfiguration {
         @Bean
         @ConditionalOnMissingBean
         public EngineEventsPublisherFactory engineEventPublisherFactory(EngineEventsPredicateFactory engineEventsPredicateFactory,
-                                                                        Flux<Message<EngineEvent>> engineEventsFlux) {
+                                                                        Flux<Message<List<EngineEvent>>> engineEventsFlux) {
             return new EngineEventsFluxPublisherFactory(engineEventsFlux, engineEventsPredicateFactory);
         }
 

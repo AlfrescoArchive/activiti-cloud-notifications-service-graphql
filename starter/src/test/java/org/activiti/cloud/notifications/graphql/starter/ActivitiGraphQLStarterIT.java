@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -488,6 +489,90 @@ public class ActivitiGraphQLStarterIT {
                     .expectComplete()
                     .verify(TIMEOUT);
     }
+    
+    @Test
+    public void testGraphqlSubscriptionShouldFilterEmptyResults() throws JsonProcessingException {
+        ReplayProcessor<String> data = ReplayProcessor.create();
+        
+        keycloakTokenProducer.setKeycloakTestUser(TESTADMIN);
+        final String auth = keycloakTokenProducer.authorizationHeaders().getFirst(AUTHORIZATION);
+        
+        Map<String, Object> variables = new StringObjectMapBuilder().put("appName", "default-app")
+                                                                    .put("eventType", "PROCESS_STARTED")
+                                                                    .get();
+         
+        Map<String, Object> payload = new StringObjectMapBuilder().put("query", "subscription($appName: String!, $eventType: EngineEventType!) { "
+                                                                                + "  engineEvents(appName: [$appName], eventType: [$eventType]) { "
+                                                                                + "    processInstanceId "
+                                                                                + "    processDefinitionId "
+                                                                                + "    eventType "
+                                                                                + "  } "
+                                                                                + "}")
+                                                                  .put("variables", variables)
+                                                                  .get();        
+        GraphQLMessage start = GraphQLMessage.builder()
+                                             .type(GraphQLMessageType.START)
+                                             .id("1")
+                                             .payload(payload)
+                                             .build();
+        
+        String startMessage = objectMapper.writeValueAsString(start);
+        
+        // given 
+        CloudBPMNSignalReceivedEvent event1 = new CloudBPMNSignalReceivedEventImpl("id",
+                                                                                   new Date().getTime(),
+                                                                                   new BPMNSignalImpl("elementId"),
+                                                                                   "processDefinitionId",
+                                                                                   "processInstanceId") {
+            {
+                setAppName("default-app");
+                setServiceName("rb-my-app");
+                setServiceFullName("serviceFullName");
+                setServiceType("runtime-bundle");
+                setServiceVersion("");
+                setProcessDefinitionId("processDefinitionId");
+                setProcessDefinitionKey("processDefinitionKey");
+                setProcessDefinitionVersion(1);
+                setBusinessKey("businessKey");
+            }
+        };
+
+        WebsocketSender client = HttpClient.create()
+                                           .baseUrl("ws://localhost:" + port)
+                                           .wiretap(true)
+                                           .headers(h -> h.add(AUTHORIZATION, auth))
+                                           .websocket(GRAPHQL_WS)
+                                           .uri(WS_GRAPHQL_URI);
+        
+        // start subscription
+        client.handle((i, o) -> {
+              o.options(NettyPipeline.SendOptions::flushOnEach)
+               .sendString(Mono.just(startMessage))
+               .then()
+               .log("start")
+               .subscribe();
+             
+            return i.receive()
+                    .asString()
+                    .log("data")
+                    .timeout(Duration.ofSeconds(2))
+                    .doOnSubscribe(s -> producerChannel.output()
+                                                       .send(MessageBuilder.withPayload(Arrays.array(event1))
+                                                                           .setHeader("routingKey", "eventProducer")
+                                                                           .build()))
+                    .delaySubscription(Duration.ofSeconds(1))
+                    .subscribeWith(data);
+        }) // stop subscription
+        .collectList()
+        .subscribe();
+        
+        StepVerifier.create(data)
+                    .expectSubscription()
+                    .expectError(TimeoutException.class)
+                    .verify();
+    }
+    
+    
     
     @Test
     public void testGraphqlSubscriptionCloudBPMNTimerEvents() throws JsonProcessingException {

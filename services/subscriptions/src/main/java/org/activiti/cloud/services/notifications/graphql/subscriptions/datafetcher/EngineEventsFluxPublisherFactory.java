@@ -15,7 +15,6 @@
  */
 package org.activiti.cloud.services.notifications.graphql.subscriptions.datafetcher;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -23,6 +22,7 @@ import java.util.logging.Level;
 import graphql.schema.DataFetchingEnvironment;
 import org.activiti.cloud.services.notifications.graphql.events.model.EngineEvent;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import reactor.core.publisher.Flux;
 import reactor.util.Logger;
 import reactor.util.Loggers;
@@ -31,10 +31,10 @@ public class EngineEventsFluxPublisherFactory implements EngineEventsPublisherFa
 
     private static Logger logger = Loggers.getLogger(EngineEventsFluxPublisherFactory.class);
 
-    private final Flux<Message<EngineEvent>> engineEventsFlux;
+    private final Flux<Message<List<EngineEvent>>> engineEventsFlux;
     private final EngineEventsPredicateFactory predicateFactory;
     
-    public EngineEventsFluxPublisherFactory(Flux<Message<EngineEvent>> engineEventsFlux,
+    public EngineEventsFluxPublisherFactory(Flux<Message<List<EngineEvent>>> engineEventsFlux,
                                             EngineEventsPredicateFactory predicateFactory) {
         this.engineEventsFlux = engineEventsFlux;
         this.predicateFactory = predicateFactory;
@@ -45,8 +45,12 @@ public class EngineEventsFluxPublisherFactory implements EngineEventsPublisherFa
         Predicate<? super Message<EngineEvent>> predicate = predicateFactory.getPredicate(environment);
 
         return engineEventsFlux.log(logger, Level.CONFIG, true)
-                               .filter(predicate)
-                               .map(Message::getPayload)
-                               .buffer(Duration.ofSeconds(1));
+                               .flatMapSequential(message -> Flux.fromIterable(message.getPayload())
+                                                                 .map(it -> MessageBuilder.<EngineEvent> createMessage(it, message.getHeaders()))
+                                                                 .filter(predicate)
+                                                                 .map(Message::getPayload)
+                                                                 .collectList()
+                                                                 .filter(list -> !list.isEmpty())
+                               );
     }
 }
