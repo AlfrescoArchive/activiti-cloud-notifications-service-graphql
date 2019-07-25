@@ -128,6 +128,18 @@ public abstract class AbstractDestinationResolver implements DataFetcherDestinat
         private List<T> next;
         private int index = 0;
 
+        public CartesianProductIterator(final Iterable<? extends Iterable<T>> factors) {
+            this.factors = StreamSupport.stream(factors.spliterator(), false)
+                    .collect(Collectors.toList());
+            if (this.factors.size() == 0) {
+                index = -1;
+            }
+            iterators = new Stack<>();
+            iterators.add(this.factors.get(0).iterator());
+            current = new Stack<>();
+            computeNext();
+        }
+        
         private void computeNext() {
             while (true) {
                 if (iterators.get(index).hasNext()) {
@@ -148,18 +160,6 @@ public abstract class AbstractDestinationResolver implements DataFetcherDestinat
                     current.pop();
                 }
             }
-        }
-
-        public CartesianProductIterator(final Iterable<? extends Iterable<T>> factors) {
-            this.factors = StreamSupport.stream(factors.spliterator(), false)
-                    .collect(Collectors.toList());
-            if (this.factors.size() == 0) {
-                index = -1;
-            }
-            iterators = new Stack<>();
-            iterators.add(this.factors.get(0).iterator());
-            current = new Stack<>();
-            computeNext();
         }
 
         @Override
