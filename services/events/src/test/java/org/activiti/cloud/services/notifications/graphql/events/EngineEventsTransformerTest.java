@@ -270,7 +270,7 @@ public class EngineEventsTransformerTest {
         assertThat(notifications).hasSize(3);
         assertThat(notifications.get(0).get("serviceName")).isNull();
         assertThat(notifications.get(1).get("serviceName")).isEqualTo("rb");
-        assertThat(notifications.get(1).get("serviceName")).isEqualTo("rb");
+        assertThat(notifications.get(2).get("serviceName")).isEqualTo("rb");
         
     }
     
