@@ -127,10 +127,6 @@ public class ActivitiGraphQLStarterIT {
         // Nothing
     }
 
-    
-    /**
-     * 
-     */
     @Before
     public void setUp() {
         keycloakTokenProducer.setKeycloakTestUser(TESTADMIN);
@@ -201,18 +197,19 @@ public class ActivitiGraphQLStarterIT {
         keycloakTokenProducer.setKeycloakTestUser(TESTADMIN);
         final String auth = keycloakTokenProducer.authorizationHeaders().getFirst(AUTHORIZATION);
         
-        Map<String, Object> variables = new StringObjectMapBuilder().put("appName", "default-app")
-                                                                    .put("eventTypes", Arrays.array("PROCESS_CREATED", "PROCESS_STARTED"))
-                                                                    .get();
+        Map<String, Object> variables = mapBuilder().put("appName", "default-app")
+                                                    .put("eventTypes", Arrays.array("PROCESS_CREATED", "PROCESS_STARTED"))
+                                                    .get();
          
-        Map<String, Object> payload = new StringObjectMapBuilder().put("query", "subscription($appName: String!, $eventTypes: [EngineEventType!]) { "
-                                                                                + "  engineEvents(appName: [$appName], eventType: $eventTypes) { "
-                                                                                + "    processInstanceId  "
-                                                                                + "    eventType "
-                                                                                + "  } "
-                                                                                + "}")
-                                                                  .put("variables", variables)
-                                                                  .get();        
+        Map<String, Object> payload = mapBuilder().put("query", "subscription($appName: String!, $eventTypes: [EngineEventType!]) { "
+                                                                + "  engineEvents(appName: [$appName], eventType: $eventTypes) { "
+                                                                + "    processInstanceId  "
+                                                                + "    eventType "
+                                                                + "  } "
+                                                                + "}")
+                                                  .put("variables", variables)
+                                                  .get();
+        
         GraphQLMessage start = GraphQLMessage.builder()
                                              .type(GraphQLMessageType.START)
                                              .id("1")

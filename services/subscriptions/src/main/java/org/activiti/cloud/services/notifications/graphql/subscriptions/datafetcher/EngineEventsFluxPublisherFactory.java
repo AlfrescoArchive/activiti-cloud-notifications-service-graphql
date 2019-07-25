@@ -17,95 +17,36 @@ package org.activiti.cloud.services.notifications.graphql.subscriptions.datafetc
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.logging.Level;
 
-import graphql.language.Field;
 import graphql.schema.DataFetchingEnvironment;
-import org.activiti.cloud.services.notifications.graphql.events.RoutingKeyResolver;
 import org.activiti.cloud.services.notifications.graphql.events.model.EngineEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
-import org.springframework.util.AntPathMatcher;
 import reactor.core.publisher.Flux;
+import reactor.util.Logger;
+import reactor.util.Loggers;
 
 public class EngineEventsFluxPublisherFactory implements EngineEventsPublisherFactory {
 
-    private static Logger log = LoggerFactory.getLogger(EngineEventsFluxPublisherFactory.class);
-
-    private DataFetcherDestinationResolver destinationResolver = new AntPathDestinationResolver();
+    private static Logger logger = Loggers.getLogger(EngineEventsFluxPublisherFactory.class);
 
     private final Flux<Message<EngineEvent>> engineEventsFlux;
-    private AntPathMatcher pathMatcher = new AntPathMatcher(".");
-    private final RoutingKeyResolver routingKeyResolver;
+    private final EngineEventsPredicateFactory predicateFactory;
     
     public EngineEventsFluxPublisherFactory(Flux<Message<EngineEvent>> engineEventsFlux,
-                                            RoutingKeyResolver routingKeyResolver) {
+                                            EngineEventsPredicateFactory predicateFactory) {
         this.engineEventsFlux = engineEventsFlux;
-        this.routingKeyResolver = routingKeyResolver;
+        this.predicateFactory = predicateFactory;
     }
     
     @Override
     public Flux<List<EngineEvent>> getPublisher(DataFetchingEnvironment environment) {
-        Set<String> selections = resolveSelections(environment);
-        List<String> destinations = destinationResolver.resolveDestinations(environment);
-        
-        Predicate<? super EngineEvent> matchDestinations = filterDestinations(destinations);
-        Predicate<? super EngineEvent> matchSelections = filterSelections(selections);
-        
-        log.info("Resolved selections: {} for destinations: {}", selections, destinations);
+        Predicate<? super Message<EngineEvent>> predicate = predicateFactory.getPredicate(environment);
 
-        return engineEventsFlux.map(Message::getPayload)
-                               .filter(matchDestinations)
-                               .filter(matchSelections)
+        return engineEventsFlux.log(logger, Level.CONFIG, true)
+                               .filter(predicate)
+                               .map(Message::getPayload)
                                .buffer(Duration.ofSeconds(1));
     }
-    
-    // filter events that do not match subscription arguments
-    protected Predicate<? super EngineEvent> filterDestinations(List<String> destinations) {
-        return (engineEvent) -> {
-            String path = routingKeyResolver.resolveRoutingKey(engineEvent);
-            
-            return destinations.stream()
-                               .anyMatch(pattern -> pathMatcher.match(pattern, path));
-        };
-    }
-
-    // apply filter to events that do not match selections in the subscription
-    protected Predicate<? super EngineEvent> filterSelections(Set<String> selections) {
-        return engineEvent -> {
-            return selections.stream().anyMatch(eventType -> engineEvent.containsKey(eventType));
-        };
-    }
-    
-    /**
-     * @param destinationResolver
-     */
-    public EngineEventsFluxPublisherFactory destinationResolver(DataFetcherDestinationResolver destinationResolver) {
-        this.destinationResolver = destinationResolver;
-
-        return this;
-    }
-
-    
-    public EngineEventsFluxPublisherFactory pathMatcher(AntPathMatcher pathMatcher) {
-        this.pathMatcher = pathMatcher;
-        
-        return this;
-    }
-    
-    protected Set<String> resolveSelections(DataFetchingEnvironment environment) {
-        return environment.getField()
-                          .getSelectionSet()
-                          .getSelections()
-                          .stream()
-                          .filter(Field.class::isInstance)
-                          .map(Field.class::cast)
-                          .map(Field::getName)
-                          .collect(Collectors.toSet());
-    }
-    
-    
 }

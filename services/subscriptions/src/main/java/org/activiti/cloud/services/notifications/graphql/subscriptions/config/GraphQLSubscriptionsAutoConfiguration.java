@@ -22,7 +22,9 @@ import org.activiti.cloud.services.notifications.graphql.events.RoutingKeyResolv
 import org.activiti.cloud.services.notifications.graphql.events.model.EngineEvent;
 import org.activiti.cloud.services.notifications.graphql.subscriptions.GraphQLSubscriptionSchemaBuilder;
 import org.activiti.cloud.services.notifications.graphql.subscriptions.GraphQLSubscriptionSchemaProperties;
+import org.activiti.cloud.services.notifications.graphql.subscriptions.datafetcher.EngineEventsDestinationsPredicateFactory;
 import org.activiti.cloud.services.notifications.graphql.subscriptions.datafetcher.EngineEventsFluxPublisherFactory;
+import org.activiti.cloud.services.notifications.graphql.subscriptions.datafetcher.EngineEventsPredicateFactory;
 import org.activiti.cloud.services.notifications.graphql.subscriptions.datafetcher.EngineEventsPublisherDataFetcher;
 import org.activiti.cloud.services.notifications.graphql.subscriptions.datafetcher.EngineEventsPublisherFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +50,15 @@ public class GraphQLSubscriptionsAutoConfiguration {
 
         @Bean
         @ConditionalOnMissingBean
-        public EngineEventsPublisherFactory engineEventPublisherFactory(RoutingKeyResolver routingKeyResolver,
-                                                                       Flux<Message<EngineEvent>> engineEventsFlux) {
-            return new EngineEventsFluxPublisherFactory(engineEventsFlux, routingKeyResolver);
+        public EngineEventsPredicateFactory engineEventsPredicateFactory(RoutingKeyResolver routingKeyResolver) {
+            return new EngineEventsDestinationsPredicateFactory(routingKeyResolver);
+        }
+        
+        @Bean
+        @ConditionalOnMissingBean
+        public EngineEventsPublisherFactory engineEventPublisherFactory(EngineEventsPredicateFactory engineEventsPredicateFactory,
+                                                                        Flux<Message<EngineEvent>> engineEventsFlux) {
+            return new EngineEventsFluxPublisherFactory(engineEventsFlux, engineEventsPredicateFactory);
         }
 
         @Bean
