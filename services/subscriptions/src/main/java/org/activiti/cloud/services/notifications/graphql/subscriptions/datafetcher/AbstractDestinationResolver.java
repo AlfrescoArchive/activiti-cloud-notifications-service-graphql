@@ -35,74 +35,74 @@ public abstract class AbstractDestinationResolver implements DataFetcherDestinat
     protected abstract String wildcard();
     protected abstract String path();
 
-	@Override
-	public List<String> resolveDestinations(DataFetchingEnvironment environment) {
-		String fieldName = resolveFieldName(environment);
-		
+    @Override
+    public List<String> resolveDestinations(DataFetchingEnvironment environment) {
+        String fieldName = resolveFieldName(environment);
+        
         String[] argumentNames = resolveArgumentNames(environment);
-		
-		List<String> destinations = new ArrayList<>();
+        
+        List<String> destinations = new ArrayList<>();
 
-		// Build destinations from arguments
-		if(environment.getArguments().size() > 0) {
+        // Build destinations from arguments
+        if(environment.getArguments().size() > 0) {
 
-		    List<List<String>> arguments = Stream.of(argumentNames)
-		        .map(name -> resolveArgument(environment, name))
+            List<List<String>> arguments = Stream.of(argumentNames)
+                .map(name -> resolveArgument(environment, name))
                 .collect(Collectors.toList());
-		    
+            
             // [[*],[a,b],[*]] => [[*,a,*], [*,b,*]]
-		    crossJoin(arguments).stream()
-    		              .map(list -> list.stream()
-    		                               .collect(Collectors.joining(path())))
-    		              .forEach(pattern -> destinations.add(fieldName + path() + pattern));
-		        
+            crossJoin(arguments).stream()
+                          .map(list -> list.stream()
+                                           .collect(Collectors.joining(path())))
+                          .forEach(pattern -> destinations.add(fieldName + path() + pattern));
+                
         } else {
             destinations.add(fieldName + path() + any());
         }
 
-		return destinations;
-	}
-	
-	protected String resolveFieldName(DataFetchingEnvironment environment) {
+        return destinations;
+    }
+    
+    protected String resolveFieldName(DataFetchingEnvironment environment) {
         return environment.getFields().iterator().next().getName();
-	    
-	}
-	
+        
+    }
+    
 
-	protected String[] resolveArgumentNames(DataFetchingEnvironment environment) {
+    protected String[] resolveArgumentNames(DataFetchingEnvironment environment) {
         return environment.getFieldDefinition()
                 .getArguments()
                 .stream()
                 .map(arg -> arg.getName())
                 .toArray(String[]::new);
-	}
-	
+    }
+    
 
-	private List<String> resolveArgument(DataFetchingEnvironment environment, String arumentName) {
-	    List<String> value = new ArrayList<>();
-	    
-	    Object argument = environment.getArgument(arumentName);
-	    
-	    if(argument instanceof List)
-	        value.addAll(environment.getArgument(arumentName));
-	    else if(argument != null )
-	        value.add(argument.toString());
-	    else
-	        value.add(wildcard());
-	    
-	    
-	    return value;
-	}
+    private List<String> resolveArgument(DataFetchingEnvironment environment, String arumentName) {
+        List<String> value = new ArrayList<>();
+        
+        Object argument = environment.getArgument(arumentName);
+        
+        if(argument instanceof List)
+            value.addAll(environment.getArgument(arumentName));
+        else if(argument != null )
+            value.add(argument.toString());
+        else
+            value.add(wildcard());
+        
+        
+        return value;
+    }
 
 
-	public static <T> List<List<T>> crossJoin(List<List<T>> factors) {
-	    return new CartesianProduct<T>(factors).stream()
-	                                           .collect(Collectors.toList());
-	}
-	
-	public static List<List<String>> zip(List<String> list1, List<String> list2 ) {
-	    return crossJoin(Arrays.asList(list1, list2));
-	}
+    public static <T> List<List<T>> crossJoin(List<List<T>> factors) {
+        return new CartesianProduct<T>(factors).stream()
+                                               .collect(Collectors.toList());
+    }
+    
+    public static List<List<String>> zip(List<String> list1, List<String> list2 ) {
+        return crossJoin(Arrays.asList(list1, list2));
+    }
 
     static class CartesianProduct<T> implements Iterable<List<T>> {
         private final Iterable<? extends Iterable<T>> factors;
@@ -179,6 +179,6 @@ public abstract class AbstractDestinationResolver implements DataFetcherDestinat
             next = null;
             return result;
         }
-    }   	
-	
+    }       
+    
 }
