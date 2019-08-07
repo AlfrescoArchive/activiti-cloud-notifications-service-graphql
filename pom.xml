@@ -5,21 +5,21 @@
   <parent>
     <groupId>org.activiti.cloud.build</groupId>
     <artifactId>activiti-cloud-parent</artifactId>
-    <version>7.1.7</version>
+    <version>7.1.M3.RC0</version>
     <relativePath/>
   </parent>
 
   <groupId>org.activiti.cloud.notifications.graphql</groupId>
   <artifactId>activiti-cloud-notifications-service-graphql-parent</artifactId>
   <name>Activiti Cloud Notifications GraphQL Service :: Parent</name>
-  <version>7.1.72</version>
+  <version>7.1.M3.RC0</version>
   <packaging>pom</packaging>
   <url>http://activiti.org</url>
   
   <properties>
-      <activiti-cloud-build.version>7.1.7</activiti-cloud-build.version>
-      <activiti-cloud-query-service.version>7.1.65</activiti-cloud-query-service.version>
-      <activiti-cloud-notifications-service-graphql.version>${project.version}</activiti-cloud-notifications-service-graphql.version>
+      <activiti-cloud-build.version>7.1.M3.RC0</activiti-cloud-build.version>
+      <activiti-cloud-query-service.version>7.1.M3.RC0</activiti-cloud-query-service.version>
+      <activiti-cloud-notifications-service-graphql.version>7.1.M3.RC0</activiti-cloud-notifications-service-graphql.version>
       <graphql-jpa-query.version>0.3.27</graphql-jpa-query.version>
   </properties>
 
