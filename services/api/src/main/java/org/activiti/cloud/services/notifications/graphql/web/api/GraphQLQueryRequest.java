@@ -24,14 +24,6 @@ public class GraphQLQueryRequest {
     }
 
     /**
-     * @param query
-     */
-    public GraphQLQueryRequest(String query) {
-        super();
-        this.query = query;
-    }
-
-    /**
      * @return the query
      */
     public String getQuery() {
